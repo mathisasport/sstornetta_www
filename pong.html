@@ -61,7 +61,8 @@ function draw_paddle2(){
 
 
 function draw_ball(){
-  canvas.strokeRect(ball.x,ball.y,ball.width,ball.height);
+  canvas.fillStyle = "white";
+  canvas.fillRect(ball.x,ball.y,ball.width,ball.height);
 }
 
 function update(){
