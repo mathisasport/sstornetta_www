@@ -51,12 +51,12 @@ function draw_background(){
 // drawing the paddles 
 function draw_paddle(){
   canvas.fillStyle = "#00FFFF";
-  canvas.fillRect(10,paddle_position,21,100);
+  canvas.fillRect(10,paddle_position,20,100);
 }
 
 function draw_paddle2(){
   canvas.fillStyle = "#00FFFF";
-  canvas.fillRect(569,paddle_position2,21,100);
+  canvas.fillRect(570,paddle_position2,20,100);
 }
 
 
@@ -87,11 +87,21 @@ function update(){
   {
     ball.y_velocity = -ball.y_velocity;
   }
- 
-  if(ball.x >= CANVAS_WIDTH - ball.width || 
-     ball.x <= 0)
+
+  // collision with paddle2 
+  if(  (ball.x + ball.width >= CANVAS_WIDTH - 30 && 
+       (ball.y >= paddle_position2 && ball.y <= paddle_position2 + 100)) || 
+
+  // collision with paddle
+       (ball.x <= 30)
+    )
   {
     ball.x_velocity = -ball.x_velocity;
+  }
+
+  // collision with far wall
+  if (ball.x >= CANVAS_WIDTH - ball.width) {
+   clearInterval(timer); 
   }
 
 // update positions
