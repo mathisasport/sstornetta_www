@@ -93,15 +93,19 @@ function update(){
        (ball.y >= paddle_position2 && ball.y <= paddle_position2 + 100)) || 
 
   // collision with paddle
-       (ball.x <= 30)
+       (ball.x <= 30 &&
+       (ball.y >= paddle_position && ball.y <= paddle_position + 100))
     )
   {
     ball.x_velocity = -ball.x_velocity;
   }
 
-  // collision with far wall
-  if (ball.x >= CANVAS_WIDTH - ball.width) {
-   clearInterval(timer); 
+  // collision with left and right walls
+  if ( ball.x >= CANVAS_WIDTH - ball.width || 
+       ball.x <= 0
+     )
+  {
+    clearInterval(timer); 
   }
 
 // update positions
