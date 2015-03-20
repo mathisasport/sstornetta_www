@@ -21,6 +21,9 @@ var CANVAS_WIDTH = 600;
 var CANVAS_HEIGHT = 500;
 var paddle_position = 200;
 var paddle_position2 = 200;
+var paddle_update = 0;
+var paddle_2_update = 0;
+
 var FPS = 60;
 
 var ball = {
@@ -32,14 +35,28 @@ var ball = {
   y_velocity: 2
 };
 
-
 // create canvas
 var canvasElement = $("<canvas width='" + CANVAS_WIDTH + 
                       "' height='" + CANVAS_HEIGHT + "'></canvas>");
 var canvas = canvasElement.get(0).getContext("2d");
 canvasElement.appendTo('body');
 
-// background for pong game
+// simple game loop
+var timer = setInterval(game_loop,1000/FPS);
+
+function game_loop()
+{
+  check_user_input();
+  check_for_collisions();
+  update_positions();
+  draw_background();
+  draw_paddle();
+  draw_paddle2(); 
+  draw_ball();
+}
+
+// all the functions we use in the game loop:
+
 function draw_background(){
   canvas.fillStyle = "#FFC2EB";
   canvas.fillRect(0, 0, 300, 500);
@@ -48,7 +65,12 @@ function draw_background(){
   canvas.fillStyle = "#FFFFFF";
   canvas.fillRect(297,0,6,500);
 }
-// drawing the paddles 
+
+function draw_ball(){
+  canvas.fillStyle = "white";
+  canvas.fillRect(ball.x,ball.y,ball.width,ball.height);
+}
+
 function draw_paddle(){
   canvas.fillStyle = "#00FFFF";
   canvas.fillRect(10,paddle_position,20,100);
@@ -59,29 +81,35 @@ function draw_paddle2(){
   canvas.fillRect(570,paddle_position2,20,100);
 }
 
+function check_user_input(){
 
-function draw_ball(){
-  canvas.fillStyle = "white";
-  canvas.fillRect(ball.x,ball.y,ball.width,ball.height);
+// player 2 paddle control 
+  if(keydown.down){
+    paddle_2_update = 5;
+  } else if(keydown.up){
+    paddle_2_update = -5;
+  } else {
+    paddle_2_update = 0;
+  }
+
+// player 1 paddle control
+  if(keydown.s){
+    paddle_update = 5;
+  } else if(keydown.w){
+    paddle_update = -5;
+  } else {
+    paddle_update = 0;
+  }
+
+// stop the game
+  if (keydown.c){
+    clearInterval(timer);
+  }
+
 }
 
-function update(){
-
-// check user input 
-  if(keydown.down){
-    paddle_position2 += 5;
-  }
-  if(keydown.up){
-    paddle_position2 -= 5;
-  }
-  if(keydown.s){
-    paddle_position += 5;
-  }
-  if(keydown.w){
-    paddle_position -= 5;
-  }
-
-// check for collisions
+function check_for_collisions(){
+  // collisions with top and bottom walls
   if(ball.y >= CANVAS_HEIGHT - ball.height ||
      ball.y <= 0)
   {
@@ -106,32 +134,22 @@ function update(){
      )
   {
     clearInterval(timer); 
-  }
+  }  
+}
+
+function update_positions(){
 
 // update positions
-  paddle_position= paddle_position.clamp(0,400);
+
+  paddle_position += paddle_update;
+  paddle_position = paddle_position.clamp(0,400);
+  paddle_position2 += paddle_2_update;
   paddle_position2 = paddle_position2.clamp(0,400);
 
   ball.x = ball.x + ball.x_velocity;
   ball.y = ball.y + ball.y_velocity;
 }
-// simplest game loop
-var timer = setInterval(game_loop,1000/FPS);
 
-
-function game_loop()
-{
-  update();
-  draw_background();
-  draw_paddle();
-  draw_paddle2();  
-  draw_ball();
-
-// stop the game
-  if (keydown.c){
-    clearInterval(timer);
-  }
-}
 </script>
 </body>
 </html>
