@@ -16,16 +16,14 @@
 </head>
 <body>
 <script>
-// some initial variables
+// set initial variables
 var CANVAS_WIDTH = 600;
 var CANVAS_HEIGHT = 500;
 var paddle_position = 200;
 var paddle_position2 = 200;
 var paddle_update = 0;
 var paddle_2_update = 0;
-
 var FPS = 60;
-
 var ball = {
   x: 100,
   y: 100,
@@ -34,6 +32,10 @@ var ball = {
   x_velocity: 2,
   y_velocity: 2
 };
+var score_1 = 0;
+var score_2 = 0;
+var wait_to_start = true;
+var MAX_SCORE = 3;
 
 // create canvas
 var canvasElement = $("<canvas width='" + CANVAS_WIDTH + 
@@ -42,7 +44,29 @@ var canvas = canvasElement.get(0).getContext("2d");
 canvasElement.appendTo('body');
 
 // simple game loop
-var timer = setInterval(game_loop,1000/FPS);
+
+var timer = null;
+
+function start_game(){
+
+  canvas.font = "30px Verdana";
+  canvas.fillText("press space to start pong",100,235);
+/*
+   note sure why this code does not work.  using the click ok alert below
+   as a workaround.  Claims that keydown is not defined.  Yet it works later
+   in check_for_input.  
+   while(wait_to_start){
+     if(keydown.space){
+       wait_to_start = false;
+     }
+   }
+*/
+  alert("click ok to start pong");
+  timer = setInterval(game_loop,1000/FPS);
+}
+start_game();
+
+// timer = setInterval(game_loop,1000/FPS);
 
 function game_loop()
 {
@@ -50,6 +74,7 @@ function game_loop()
   check_for_collisions();
   update_positions();
   draw_background();
+  draw_score();
   draw_paddle();
   draw_paddle2(); 
   draw_ball();
@@ -82,6 +107,10 @@ function draw_paddle2(){
 }
 
 function check_user_input(){
+// stop the game
+  if (keydown.c){
+    clearInterval(timer);
+  }
 
 // player 2 paddle control 
   if(keydown.down){
@@ -91,7 +120,6 @@ function check_user_input(){
   } else {
     paddle_2_update = 0;
   }
-
 // player 1 paddle control
   if(keydown.s){
     paddle_update = 5;
@@ -99,11 +127,6 @@ function check_user_input(){
     paddle_update = -5;
   } else {
     paddle_update = 0;
-  }
-
-// stop the game
-  if (keydown.c){
-    clearInterval(timer);
   }
 
 }
@@ -128,13 +151,19 @@ function check_for_collisions(){
     ball.x_velocity = -ball.x_velocity;
   }
 
-  // collision with left and right walls
-  if ( ball.x >= CANVAS_WIDTH - ball.width || 
-       ball.x <= 0
-     )
+  // collisions with left and right walls
+  if (ball.x >= CANVAS_WIDTH - ball.width)
   {
-    clearInterval(timer); 
+    score_1 += 1;
+    ball.x = ball.y = 100;
+
   }  
+  if ( ball.x <= 0 )
+  {
+    score_2 += 1;
+    ball.x = ball.y = 100;
+  }  
+
 }
 
 function update_positions(){
@@ -145,11 +174,19 @@ function update_positions(){
   paddle_position = paddle_position.clamp(0,400);
   paddle_position2 += paddle_2_update;
   paddle_position2 = paddle_position2.clamp(0,400);
-
   ball.x = ball.x + ball.x_velocity;
   ball.y = ball.y + ball.y_velocity;
 }
 
+function draw_score(){
+  canvas.font = "Georgia 20px";
+  canvas.fillText(score_1,200,30);
+  canvas.fillText(score_2,400,30);
+  if (score_1 >= 7  || score_2 >= MAX_SCORE){
+  canvas.fillText("Game Over",225,240);
+  clearInterval(timer);
+  }
+}
 </script>
 </body>
 </html>
