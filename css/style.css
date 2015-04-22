@@ -1,0 +1,22 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100%;
+    }
+html {
+    height: 100%;
+    }
+input {
+    font-size: 1em;
+    width: 2em;
+}
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    }
+#timer1 {
+    font-size: 3em;
+}

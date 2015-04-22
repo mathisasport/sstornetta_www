@@ -4,37 +4,29 @@
   <title>Timer</title>
   <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
   <script src="js/jquery.hotkeys.js"></script>
-  <style>
-    body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    }
-    html {
-    height: 100%;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="css/build/style.css">
 </head>
 <body>
+<div id='container'>
+  <input name="set" type="text" id="input1" value="300"/>
+  <div id='timer1'>0:00</div>
+</div>
 <audio id="time_is_up">
   <source src="audio/chimes.mp3">
 </audio>
-<input name="set" type="text" id="input1" value="2700"/>
-<div id='timer1'>Start</div>
   <script>
     $(document).on('keydown',null,'down',function(event){
     alert("you pressed down arrow");
     });
 
-    var seconds_remaining;
+    var seconds_remaining=0;
     var my_seconds;
     var my_minutes;
     var my_seconds_string;
     var my_minutes_string;
     var my_time_string;
-    var my_Interval_Object; 
-    $("#input1").on("keydown",function search(event) {
+    var my_interval_object; 
+    $("#input1").on("keydown",function(event){
     if(event.keyCode == 13) {
         clearInterval(my_interval_object);
         seconds_remaining = $(this).val();
@@ -51,6 +43,7 @@
     my_minutes_string = my_minutes.toString();
     my_time_string = my_minutes_string + ":" + my_seconds_string;
     $("#timer1").html(my_time_string);
+    document.title = my_time_string;
     seconds_remaining = seconds_remaining - 1;
     if (seconds_remaining < 0){
         $("#time_is_up")[0].play();
